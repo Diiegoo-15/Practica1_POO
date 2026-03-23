@@ -47,25 +47,31 @@ public class Main {
                     break;
 
                 case 3:
-                    System.out.print("Nombre de la prenda a vender: ");
-                    String nomVenta = tec.nextLine();
+                	
+                    System.out.print("Nombre: ");
+                    String n = tec.nextLine();
                     System.out.print("Talla: ");
-                    char tallaVenta = tec.next().toUpperCase().charAt(0);
-                    
-                    SalesRegister.processSale(miTienda, nomVenta, tallaVenta);
+                    char t = tec.next().toUpperCase().charAt(0);
+                    ClothingItem vendido = SalesRegister.processSale(miTienda, n, t);
+                    if (vendido != null) {
+                        System.out.println("Vendido: " + vendido.getName());
+                    } else {
+                        System.out.println("No hay stock.");
+                    }
                     break;
-
+                    
                 case 4:
-                    System.out.println("--- BALANCE DE CAJA ---");
-                    System.out.println("Artículos vendidos: " + SalesRegister.getTotalSalesCount());
-                    System.out.println("Total recaudado: " + SalesRegister.getTotalSalesAmount() + "€");
+                 
+                    System.out.println(SalesRegister.getBalance());
                     break;
 
                 case 5:
+                	
                     System.out.println("Cerrando sistema... ¡Hasta pronto!");
                     break;
 
                 default:
+                	
                     System.out.println("Opción no válida, intente de nuevo.");
             }
         } while (opcion != 5);
