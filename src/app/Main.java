@@ -4,78 +4,111 @@ import java.util.Scanner;
 import shop.ClothingItem;
 import shop.Inventory;
 import sales.SalesRegister;
+import sales.ShoppingRegister;
+import test.TestLinkedCart;
+import test.TestShoppingRegister;
 
 public class Main {
     public static void main(String[] args) {
-    	
-        Scanner tec = new Scanner(System.in);
-        Inventory miTienda = new Inventory(100);
+   
+        Scanner tec = new Scanner(System.in); 
+        Inventory inventory = new Inventory(100);
+        ShoppingRegister shoppingRegister = new ShoppingRegister();
         int opcion = 0;
 
-        System.out.println("--- BIENVENIDO A LA GESTIÓN DE TIENDA ---");
+        System.out.println("Ejecutando verificadores...");
+        TestLinkedCart.checkLinkedCart();
+        TestShoppingRegister.checkShoppingRegister();
 
-        //Menu
+        System.out.println("*** Bienvenido a Strafalarius ***");
+
         do {
-            System.out.println("\nMenú de Opciones:");
-            System.out.println("1. Añadir prenda al inventario");
-            System.out.println("2. Ver inventario completo");
-            System.out.println("3. Vender una prenda");
-            System.out.println("4. Ver balance de ventas");
-            System.out.println("5. Salir");
-            System.out.print("Seleccione una opción: ");
-            
-            opcion = tec.nextInt();
-            tec.nextLine(); 
+            // Menú 
+            System.out.println("\nSeleccione opción:");
+            System.out.println("1. Agregar nueva prenda al inventario");
+            System.out.println("2. Mostrar inventario");
+            System.out.println("3. Procesar venta directa");
+            System.out.println("4. Mostrar estadísticas de ventas");
+            System.out.println("5. Agregar prenda al carrito");
+            System.out.println("6. Eliminar prenda del carrito");
+            System.out.println("7. Confirmar carrito de compra");
+            System.out.println("8. Mostrar productos del carrito");
+            System.out.println("9. Salir");
+            System.out.print("Seleccione una opción (1-9): ");
 
-            switch (opcion) {
-                case 1:
-                    System.out.print("Nombre de la prenda: ");
-                    String nombre = tec.nextLine();
-                    System.out.print("Precio: ");
-                    double precio = tec.nextDouble();
-                    System.out.print("Talla (S, M, L): ");
-                    char talla = tec.next().toUpperCase().charAt(0);
-                    
-                    ClothingItem nuevaPrenda = new ClothingItem(nombre, precio, talla);
-                    miTienda.addItem(nuevaPrenda);
-                    System.out.println("Prenda añadida correctamente.");
-                    break;
+            try {
+                opcion = tec.nextInt();
+                tec.nextLine(); 
 
-                case 2:
+                switch (opcion) {
+                    case 1:
+                        System.out.print("Nombre de la prenda: ");
+                        String nom = tec.nextLine();
+                        System.out.print("Precio: ");
+                        double pre = tec.nextDouble();
+                        System.out.print("Talla (S, M, L): ");
+                        char tal = tec.next().toUpperCase().charAt(0);
+                        inventory.addItem(new ClothingItem(nom, pre, tal));
+                        System.out.println("Prenda añadida al inventario.");
+                        break;
 
-                    System.out.println(miTienda.toString());
-                    break;
+                    case 2:
+                        System.out.println(inventory.toString());
+                        break;
 
-                case 3:
-                	
-                    System.out.print("Nombre: ");
-                    String n = tec.nextLine();
-                    System.out.print("Talla: ");
-                    char t = tec.next().toUpperCase().charAt(0);
-                    ClothingItem vendido = SalesRegister.processSale(miTienda, n, t);
-                    if (vendido != null) {
-                        System.out.println("Vendido: " + vendido.getName());
-                    } else {
-                        System.out.println("No hay stock.");
-                    }
-                    break;
-                    
-                case 4:
-                 
-                    System.out.println(SalesRegister.getBalance());
-                    break;
+                    case 3:
+                        System.out.print("Nombre de la prenda: ");
+                        String nV = tec.nextLine();
+                        System.out.print("Talla: ");
+                        char tV = tec.next().toUpperCase().charAt(0);
+                        SalesRegister.processSale(inventory, nV, tV);
+                        break;
 
-                case 5:
-                	
-                    System.out.println("Cerrando sistema... ¡Hasta pronto!");
-                    break;
+                    case 4:
+                        System.out.println(SalesRegister.getBalance());
+                        break;
 
-                default:
-                	
-                    System.out.println("Opción no válida, intente de nuevo.");
+                    case 5: 
+                        System.out.print("Nombre de la prenda: ");
+                        String nC = tec.nextLine();
+                        System.out.print("Talla: ");
+                        char tC = tec.next().toUpperCase().charAt(0);
+                        System.out.print("Cantidad de unidades: ");
+                        int cantA = tec.nextInt();
+                        shoppingRegister.addToCart(inventory, nC, tC, cantA);
+                        break;
+
+                    case 6: 
+                        System.out.print("Nombre de la prenda: ");
+                        String nR = tec.nextLine();
+                        System.out.print("Talla: ");
+                        char tR = tec.next().toUpperCase().charAt(0);
+                        System.out.print("Cantidad a eliminar: ");
+                        int cantR = tec.nextInt();
+                        shoppingRegister.removeFromCart(inventory, nR, tR, cantR);
+                        break;
+
+                    case 7: 
+                        shoppingRegister.confirmCart(inventory);
+                        break;
+
+                    case 8: 
+                        shoppingRegister.showCart();
+                        break;
+
+                    case 9:
+                        System.out.println("Saliendo del sistema...");
+                        break;
+
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            } catch (Exception e) {
+                System.out.println("Error en la entrada de datos. Reintentando...");
+                tec.nextLine(); 
             }
-        } while (opcion != 5);
+        } while (opcion != 9);
 
-        tec.close();
+        tec.close(); 
     }
 }
